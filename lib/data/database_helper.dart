@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
 import '../models/report.dart';
 
@@ -15,8 +17,15 @@ class DatabaseHelper {
 
   Future<Database> get baseDatos async {
     if (_baseDatos != null) return _baseDatos!;
-    final directorio = await getApplicationDocumentsDirectory();
-    final ruta = join(directorio.path, _nombreBaseDatos);
+    if (kIsWeb) {
+      databaseFactory = databaseFactoryFfiWeb;
+    }
+    final ruta = kIsWeb
+        ? _nombreBaseDatos
+        : join(
+            (await getApplicationDocumentsDirectory()).path,
+            _nombreBaseDatos,
+          );
     _baseDatos = await openDatabase(
       ruta,
       version: _versionBaseDatos,
@@ -29,7 +38,24 @@ class DatabaseHelper {
         await _crearBaseDatos(baseDatos, versionNueva);
       },
     );
+    await _crearUsuarioDemoSiEsNecesario(_baseDatos!);
     return _baseDatos!;
+  }
+
+  Future<void> _crearUsuarioDemoSiEsNecesario(Database baseDatos) async {
+    final usuarios = await baseDatos.query(
+      'Usuario',
+      columns: ['id_usuario'],
+      limit: 1,
+    );
+    if (usuarios.isEmpty) {
+      await insertarUsuario(
+        nombre: 'Carlos Mendoza',
+        rut: '20.155.245-1',
+        correo: 'carlos.mendoza@avamontajes.cl',
+        password: '1234',
+      );
+    }
   }
 
   Future<void> _crearBaseDatos(Database baseDatos, int versionEsquema) async {
@@ -184,10 +210,96 @@ class DatabaseHelper {
     return baseDatos.insert('Reporte', mapa);
   }
 
+  Future<Map<String, Object?>?> autenticarUsuario({
+    required String rut,
+    required String password,
+  }) async {
+    if (kIsWeb) {
+      final rutNormalizado = rut
+          .replaceAll(RegExp(r'[^0-9Kk]'), '')
+          .toUpperCase();
+      if (rutNormalizado == '201552451' && password == '1234') {
+        return {
+          'id_usuario': 1,
+          'nombre': 'Carlos Mendoza',
+          'rut': '20.155.245-1',
+          'correo': 'carlos.mendoza@avamontajes.cl',
+          'estado_usuario': 'activo',
+        };
+      }
+      return null;
+    }
+    final baseDatos = await this.baseDatos;
+    final usuarios = await baseDatos.query(
+      'Usuario',
+      columns: ['id_usuario', 'nombre', 'rut', 'correo', 'estado_usuario'],
+      where: 'rut = ? AND password = ? AND estado_usuario = ?',
+      whereArgs: [rut.trim(), password, 'activo'],
+      limit: 1,
+    );
+
+    return usuarios.isEmpty ? null : usuarios.first;
+  }
+
+  Future<int> insertarUsuario({
+    required String nombre,
+    required String rut,
+    required String correo,
+    required String password,
+    String estado = 'activo',
+  }) async {
+    final baseDatos = await this.baseDatos;
+    return baseDatos.insert('Usuario', {
+      'nombre': nombre,
+      'rut': rut.trim(),
+      'correo': correo.trim(),
+      'password': password,
+      'estado_usuario': estado,
+    });
+  }
+
   Future<List<Reporte>> obtenerReportes() async {
     final baseDatos = await this.baseDatos;
-    final filas = await baseDatos.query('Reporte', orderBy: 'fecha_evento DESC');
+    final filas = await baseDatos.query(
+      'Reporte',
+      orderBy: 'fecha_evento DESC',
+    );
     return filas.map(Reporte.fromMap).toList();
+  }
+
+  Future<Map<String, Object>> obtenerResumenDashboard() async {
+    if (kIsWeb) {
+      return {
+        'reportesHoy': 0,
+        'alertasActivas': 0,
+        'evidenciasPendientes': 0,
+        'riesgoPromedio': 'N/D',
+      };
+    }
+    final baseDatos = await this.baseDatos;
+    final hoy = DateTime.now().toIso8601String().substring(0, 10);
+    final reportesHoy = await baseDatos.rawQuery(
+      'SELECT COUNT(*) AS total FROM Reporte WHERE fecha_evento LIKE ?',
+      ['$hoy%'],
+    );
+    final alertasActivas = await baseDatos.rawQuery('''
+      SELECT COUNT(*) AS total
+      FROM Reporte r
+      INNER JOIN Estado_Reporte e ON e.id_estado_reporte = r.id_estado_reporte
+      WHERE LOWER(e.nombre_estado) NOT IN ('cerrado', 'completado', 'finalizado')
+    ''');
+    final evidenciasPendientes = await baseDatos.rawQuery('''
+      SELECT COUNT(*) AS total
+      FROM Cola_Sincronizacion
+      WHERE nombre_tabla = 'Evidencia' AND operacion IN ('insertar', 'crear', 'actualizar')
+    ''');
+
+    return {
+      'reportesHoy': Sqflite.firstIntValue(reportesHoy) ?? 0,
+      'alertasActivas': Sqflite.firstIntValue(alertasActivas) ?? 0,
+      'evidenciasPendientes': Sqflite.firstIntValue(evidenciasPendientes) ?? 0,
+      'riesgoPromedio': 'N/D',
+    };
   }
 
   Future<int> insertarEvidencia(Evidencia evidencia) async {

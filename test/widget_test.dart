@@ -11,20 +11,24 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tarjeta_pare/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('muestra el acceso SGI', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.text('Acceso Personal SGI'), findsOneWidget);
+    expect(find.text('Ingresar SGI Móvil'), findsOneWidget);
+    expect(find.text('RUT USUARIO'), findsOneWidget);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  testWidgets('formatea el RUT con puntos y guion', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const MyApp());
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    final campoRut = find.byType(TextFormField).first;
+    await tester.enterText(campoRut, '201552451');
+
+    final textField = tester.widget<TextFormField>(campoRut);
+    expect(textField.controller?.text, '20.155.245-1');
   });
 }

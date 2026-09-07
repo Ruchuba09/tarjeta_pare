@@ -11,7 +11,7 @@ class DatabaseHelper {
 
   static final DatabaseHelper instancia = DatabaseHelper._();
   static const _nombreBaseDatos = 'tarjeta_pare.db';
-  static const _versionBaseDatos = 2;
+  static const _versionBaseDatos = 3;
 
   Database? _baseDatos;
 
@@ -54,6 +54,7 @@ class DatabaseHelper {
         rut: '20.155.245-1',
         correo: 'carlos.mendoza@avamontajes.cl',
         password: '1234',
+        rol: 'jefe_obra',
       );
     }
   }
@@ -84,6 +85,7 @@ class DatabaseHelper {
         rut VARCHAR(100) NOT NULL,
         correo VARCHAR(100) NOT NULL,
         password VARCHAR(100) NOT NULL,
+        rol VARCHAR(40) NOT NULL DEFAULT 'obrero',
         estado_usuario VARCHAR(100) NOT NULL
       )
     ''');
@@ -224,6 +226,7 @@ class DatabaseHelper {
           'nombre': 'Carlos Mendoza',
           'rut': '20.155.245-1',
           'correo': 'carlos.mendoza@avamontajes.cl',
+          'rol': 'jefe_obra',
           'estado_usuario': 'activo',
         };
       }
@@ -232,7 +235,7 @@ class DatabaseHelper {
     final baseDatos = await this.baseDatos;
     final usuarios = await baseDatos.query(
       'Usuario',
-      columns: ['id_usuario', 'nombre', 'rut', 'correo', 'estado_usuario'],
+      columns: ['id_usuario', 'nombre', 'rut', 'correo', 'rol', 'estado_usuario'],
       where: 'rut = ? AND password = ? AND estado_usuario = ?',
       whereArgs: [rut.trim(), password, 'activo'],
       limit: 1,
@@ -246,6 +249,7 @@ class DatabaseHelper {
     required String rut,
     required String correo,
     required String password,
+    String rol = 'obrero',
     String estado = 'activo',
   }) async {
     final baseDatos = await this.baseDatos;
@@ -254,6 +258,7 @@ class DatabaseHelper {
       'rut': rut.trim(),
       'correo': correo.trim(),
       'password': password,
+      'rol': rol,
       'estado_usuario': estado,
     });
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../data/database_helper.dart';
+import 'report_selection_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key, required this.usuario});
@@ -393,8 +394,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  void _crearReporte() => _mostrarMensaje(
-    'El formulario de reportes se conectará a SQLite en el siguiente módulo.',
+  void _crearReporte() => Navigator.push(
+    context,
+    MaterialPageRoute(builder: (_) => ReportSelectionScreen(usuario: widget.usuario)),
   );
   void _verReportes() =>
       _mostrarMensaje('Los reportes se cargarán desde SQLite.');

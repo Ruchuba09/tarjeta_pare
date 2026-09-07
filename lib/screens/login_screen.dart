@@ -63,25 +63,28 @@ class _LoginScreenState extends State<LoginScreen> {
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
           decoration: BoxDecoration(
+            color: const Color(0xFF161D20),
             border: Border.all(color: _verde, width: 2),
-            borderRadius: BorderRadius.circular(11),
+            borderRadius: BorderRadius.circular(14),
           ),
-          child: Image.network(
-            'https://cdn.intrava.cl/v2/logos/isotipo-negro-verde.png',
-            width: 88,
-            height: 40,
-            fit: BoxFit.contain,
-            errorBuilder: (_, __, ___) => const Text(
-              'AVA',
-              style: TextStyle(
-                color: _verde,
-                fontSize: 31,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 38,
+                height: 38,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(color: _verde, borderRadius: BorderRadius.circular(9)),
+                child: const Icon(Icons.construction, color: Colors.black, size: 24),
               ),
-            ),
+              const SizedBox(width: 11),
+              const Text(
+                'AVA',
+                style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w900, letterSpacing: 1.5),
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 24),

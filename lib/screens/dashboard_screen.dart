@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/database_helper.dart';
 import 'report_selection_screen.dart';
+import 'reports_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key, required this.usuario});
@@ -56,25 +57,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Column(
               children: [
                 Expanded(
-                  child: RefreshIndicator(
-                    color: _verde,
-                    backgroundColor: _panel,
-                    onRefresh: _cargarResumen,
-                    child: ListView(
-                      padding: const EdgeInsets.fromLTRB(23, 26, 23, 24),
-                      children: [
-                        _buildHeader(),
-                        const SizedBox(height: 27),
-                        _buildNewReportButton(),
-                        const SizedBox(height: 19),
-                        _buildQuickActions(),
-                        const SizedBox(height: 21),
-                        _buildSummary(),
-                        const SizedBox(height: 19),
-                        _buildSyncStatus(),
-                      ],
-                    ),
-                  ),
+                  child: _indiceSeleccionado == 1
+                      ? ReportsScreen(usuario: widget.usuario)
+                      : RefreshIndicator(
+                          color: _verde,
+                          backgroundColor: _panel,
+                          onRefresh: _cargarResumen,
+                          child: ListView(
+                            padding: const EdgeInsets.fromLTRB(23, 26, 23, 24),
+                            children: [
+                              _buildHeader(),
+                              const SizedBox(height: 27),
+                              _buildNewReportButton(),
+                              const SizedBox(height: 19),
+                              _buildQuickActions(),
+                              const SizedBox(height: 21),
+                              _buildSummary(),
+                              const SizedBox(height: 19),
+                              _buildSyncStatus(),
+                            ],
+                          ),
+                        ),
                 ),
                 _buildNavigation(),
               ],
@@ -368,7 +371,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
           labels.length,
           (index) => Expanded(
             child: InkWell(
-              onTap: () => setState(() => _indiceSeleccionado = index),
+              onTap: () {
+                if (index == 1) {
+                  _verReportes();
+                  return;
+                }
+                setState(() => _indiceSeleccionado = index);
+              },
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -398,8 +407,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     context,
     MaterialPageRoute(builder: (_) => ReportSelectionScreen(usuario: widget.usuario)),
   );
-  void _verReportes() =>
-      _mostrarMensaje('Los reportes se cargarán desde SQLite.');
+  void _verReportes() => setState(() => _indiceSeleccionado = 1);
   void _verEvidencias() =>
       _mostrarMensaje('Las evidencias se cargarán desde SQLite.');
   void _mostrarMensaje(String mensaje) =>

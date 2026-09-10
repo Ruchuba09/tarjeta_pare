@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
@@ -20,12 +19,12 @@ class DatabaseHelper {
     if (kIsWeb) {
       databaseFactory = databaseFactoryFfiWeb;
     }
+
+    final directorioBaseDatos = kIsWeb ? '' : await getDatabasesPath();
     final ruta = kIsWeb
         ? _nombreBaseDatos
-        : join(
-            (await getApplicationDocumentsDirectory()).path,
-            _nombreBaseDatos,
-          );
+        : join(directorioBaseDatos, _nombreBaseDatos);
+
     _baseDatos = await openDatabase(
       ruta,
       version: _versionBaseDatos,

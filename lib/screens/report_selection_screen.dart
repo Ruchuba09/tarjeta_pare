@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'pare_report_screen.dart';
+
 class ReportSelectionScreen extends StatefulWidget {
   const ReportSelectionScreen({super.key, required this.usuario});
 
@@ -48,7 +50,10 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
           icon: const Icon(Icons.chevron_left, color: _verde),
           tooltip: 'Volver a inicio',
         ),
-        title: const Text('Volver a inicio', style: TextStyle(color: _verde, fontSize: 13)),
+        title: const Text(
+          'Volver a inicio',
+          style: TextStyle(color: _verde, fontSize: 13),
+        ),
         titleSpacing: 0,
       ),
       body: SafeArea(
@@ -59,10 +64,19 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(18, 12, 18, 30),
               children: [
-                const Text('Nuevo Reporte de Terreno', style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
+                const Text(
+                  'Nuevo Reporte de Terreno',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(height: 4),
                 Text(
-                  _esJefeDeObra ? 'Define el contexto del reporte antes de registrarlo.' : 'Selecciona el tipo de hallazgo que deseas ingresar.',
+                  _esJefeDeObra
+                      ? 'Define el contexto del reporte antes de registrarlo.'
+                      : 'Selecciona el tipo de hallazgo que deseas ingresar.',
                   style: const TextStyle(color: _gris, fontSize: 13),
                 ),
                 const SizedBox(height: 18),
@@ -87,7 +101,11 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
       borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(color: const Color(0xFF14200F), border: Border.all(color: const Color(0xFF456A1A)), borderRadius: BorderRadius.circular(12)),
+        decoration: BoxDecoration(
+          color: const Color(0xFF14200F),
+          border: Border.all(color: const Color(0xFF456A1A)),
+          borderRadius: BorderRadius.circular(12),
+        ),
         child: const Row(
           children: [
             Icon(Icons.qr_code_2, color: _verde, size: 32),
@@ -96,9 +114,18 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Perfil de obra', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Perfil de obra',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   SizedBox(height: 4),
-                  Text('Obra ampliación Planta Norte · 2 zonas con QR', style: TextStyle(color: _gris, fontSize: 11)),
+                  Text(
+                    'Obra ampliación Planta Norte · 2 zonas con QR',
+                    style: TextStyle(color: _gris, fontSize: 11),
+                  ),
                 ],
               ),
             ),
@@ -109,10 +136,21 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
     );
   }
 
-  Widget _buildSectionLabel(String label) => Text(label, style: const TextStyle(color: _gris, fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1));
+  Widget _buildSectionLabel(String label) => Text(
+    label,
+    style: const TextStyle(
+      color: _gris,
+      fontSize: 11,
+      fontWeight: FontWeight.bold,
+      letterSpacing: 1,
+    ),
+  );
 
   Widget _buildTarjetaPareButton() {
-    final altura = (MediaQuery.sizeOf(context).height * .34).clamp(180.0, 290.0);
+    final altura = (MediaQuery.sizeOf(context).height * .34).clamp(
+      180.0,
+      290.0,
+    );
     return InkWell(
       onTap: _mostrarOpcionesTarjetaPare,
       borderRadius: BorderRadius.circular(14),
@@ -127,16 +165,30 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
         ),
         child: const Row(
           children: [
-            Icon(Icons.pan_tool_alt_outlined, color: Color(0xFFFFC400), size: 58),
+            Icon(
+              Icons.pan_tool_alt_outlined,
+              color: Color(0xFFFFC400),
+              size: 58,
+            ),
             SizedBox(width: 20),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('TARJETA PARE', style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w900)),
+                  Text(
+                    'TARJETA PARE',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 26,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
                   SizedBox(height: 10),
-                  Text('Detén una actividad riesgosa y registra el lugar.', style: TextStyle(color: _gris, fontSize: 14)),
+                  Text(
+                    'Detén una actividad riesgosa y registra el lugar.',
+                    style: TextStyle(color: _gris, fontSize: 14),
+                  ),
                 ],
               ),
             ),
@@ -152,7 +204,9 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
       context: context,
       backgroundColor: _panel,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(18))),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+      ),
       builder: (context) => SafeArea(
         child: FractionallySizedBox(
           heightFactor: .78,
@@ -161,13 +215,37 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('¿Cómo deseas iniciar?', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+                const Text(
+                  '¿Cómo deseas iniciar?',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(height: 7),
-                const Text('Usa el QR de la zona o completa el lugar manualmente.', style: TextStyle(color: _gris, fontSize: 13)),
+                const Text(
+                  'Usa el QR de la zona o completa el lugar manualmente.',
+                  style: TextStyle(color: _gris, fontSize: 13),
+                ),
                 const SizedBox(height: 22),
-                Expanded(child: _actionButton('CAPTURAR QR', 'Completa la zona automáticamente', Icons.qr_code_scanner, _capturarQr)),
+                Expanded(
+                  child: _actionButton(
+                    'CAPTURAR QR',
+                    'Completa la zona automáticamente',
+                    Icons.qr_code_scanner,
+                    _capturarQr,
+                  ),
+                ),
                 const SizedBox(height: 14),
-                Expanded(child: _actionButton('REPORTE MANUAL', 'Selecciona la zona de la obra', Icons.edit_location_alt_outlined, _reporteManual)),
+                Expanded(
+                  child: _actionButton(
+                    'REPORTE MANUAL',
+                    'Selecciona la zona de la obra',
+                    Icons.edit_location_alt_outlined,
+                    _reporteManual,
+                  ),
+                ),
               ],
             ),
           ),
@@ -176,7 +254,12 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
     );
   }
 
-  Widget _actionButton(String title, String subtitle, IconData icon, VoidCallback onPressed) {
+  Widget _actionButton(
+    String title,
+    String subtitle,
+    IconData icon,
+    VoidCallback onPressed,
+  ) {
     return SizedBox(
       width: double.infinity,
       height: double.infinity,
@@ -187,7 +270,10 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900)),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+            ),
             const SizedBox(height: 6),
             Text(subtitle, style: const TextStyle(fontSize: 13)),
           ],
@@ -196,7 +282,9 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
           alignment: Alignment.centerLeft,
           backgroundColor: _verde,
           foregroundColor: Colors.black,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(11),
+          ),
         ),
       ),
     );
@@ -204,12 +292,38 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
 
   void _capturarQr() {
     Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Captura QR lista para conectar con la cámara.')));
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const PareReportScreen(
+          esQr: true,
+          zona: PareZone(
+            obra: 'Antofagasta Fase 2',
+            nombre: 'Acceso principal',
+            sector: 'Portería norte',
+            referencia: 'Junto al control de acceso',
+          ),
+        ),
+      ),
+    );
   }
 
   void _reporteManual() {
     Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Reporte manual: selecciona la zona antes de continuar.')));
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const PareReportScreen(
+          esQr: false,
+          zona: PareZone(
+            obra: 'Antofagasta Fase 2',
+            nombre: 'Acceso principal',
+            sector: 'Portería norte',
+            referencia: 'Junto al control de acceso',
+          ),
+        ),
+      ),
+    );
   }
 
   void _mostrarPerfilObra() {
@@ -217,34 +331,82 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
       context: context,
       backgroundColor: _panel,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(18))),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+      ),
       builder: (context) => StatefulBuilder(
         builder: (context, setModalState) => SafeArea(
           child: FractionallySizedBox(
             heightFactor: .82,
             child: Padding(
-              padding: EdgeInsets.fromLTRB(20, 24, 20, MediaQuery.of(context).viewInsets.bottom + 20),
+              padding: EdgeInsets.fromLTRB(
+                20,
+                24,
+                20,
+                MediaQuery.of(context).viewInsets.bottom + 20,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-              const Text('Perfil de obra', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 5),
-              const Text('Gestiona las zonas y genera los QR para terreno.', style: TextStyle(color: _gris, fontSize: 12)),
-                const SizedBox(height: 16),
-                Expanded(child: ListView(children: _zonas.map((zona) => ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: const Icon(Icons.qr_code_2, color: _verde),
-                    title: Text(zona.nombre, style: const TextStyle(color: Colors.white, fontSize: 14)),
-                    subtitle: Text('${zona.sector} · ${zona.referencia} · ${zona.nivel}', style: const TextStyle(color: _gris, fontSize: 11)),
-                    trailing: const Icon(Icons.download_outlined, color: _gris, size: 20),
-                    )).toList())),
+                  const Text(
+                    'Perfil de obra',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  const Text(
+                    'Gestiona las zonas y genera los QR para terreno.',
+                    style: TextStyle(color: _gris, fontSize: 12),
+                  ),
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: ListView(
+                      children: _zonas
+                          .map(
+                            (zona) => ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              leading: const Icon(
+                                Icons.qr_code_2,
+                                color: _verde,
+                              ),
+                              title: Text(
+                                zona.nombre,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              subtitle: Text(
+                                '${zona.sector} · ${zona.referencia} · ${zona.nivel}',
+                                style: const TextStyle(
+                                  color: _gris,
+                                  fontSize: 11,
+                                ),
+                              ),
+                              trailing: const Icon(
+                                Icons.download_outlined,
+                                color: _gris,
+                                size: 20,
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ),
                   const SizedBox(height: 8),
-              OutlinedButton.icon(
-                onPressed: () => _mostrarFormularioZona(setModalState),
-                icon: const Icon(Icons.add, size: 18),
-                label: const Text('Agregar zona de obra'),
-                style: OutlinedButton.styleFrom(foregroundColor: _verde, side: const BorderSide(color: _verde), minimumSize: const Size(double.infinity, 44)),
-              ),
+                  OutlinedButton.icon(
+                    onPressed: () => _mostrarFormularioZona(setModalState),
+                    icon: const Icon(Icons.add, size: 18),
+                    label: const Text('Agregar zona de obra'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: _verde,
+                      side: const BorderSide(color: _verde),
+                      minimumSize: const Size(double.infinity, 44),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -269,7 +431,10 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
         titlePadding: const EdgeInsets.fromLTRB(22, 22, 22, 0),
         contentPadding: const EdgeInsets.fromLTRB(22, 12, 22, 0),
         actionsPadding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-        title: const Text('Nueva zona de obra', style: TextStyle(color: Colors.white)),
+        title: const Text(
+          'Nueva zona de obra',
+          style: TextStyle(color: Colors.white),
+        ),
         content: SizedBox(
           width: double.maxFinite,
           height: MediaQuery.sizeOf(dialogContext).height * .54,
@@ -280,12 +445,27 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
                 children: [
                   const Align(
                     alignment: Alignment.centerLeft,
-                    child: Text('Completa la ubicación antes de generar el QR.', style: TextStyle(color: _gris, fontSize: 13)),
+                    child: Text(
+                      'Completa la ubicación antes de generar el QR.',
+                      style: TextStyle(color: _gris, fontSize: 13),
+                    ),
                   ),
                   const SizedBox(height: 14),
-                  _zoneField(nombreController, 'Nombre de la zona', 'Ej. Patio de soldadura'),
-                  _zoneField(sectorController, 'Sector o área', 'Ej. Estructuras poniente'),
-                  _zoneField(referenciaController, 'Referencia visible', 'Ej. Junto al container azul'),
+                  _zoneField(
+                    nombreController,
+                    'Nombre de la zona',
+                    'Ej. Patio de soldadura',
+                  ),
+                  _zoneField(
+                    sectorController,
+                    'Sector o área',
+                    'Ej. Estructuras poniente',
+                  ),
+                  _zoneField(
+                    referenciaController,
+                    'Referencia visible',
+                    'Ej. Junto al container azul',
+                  ),
                   _zoneField(nivelController, 'Nivel o piso', 'Ej. Nivel 1'),
                 ],
               ),
@@ -293,14 +473,30 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(dialogContext), child: const Text('Cancelar', style: TextStyle(color: _gris))),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Cancelar', style: TextStyle(color: _gris)),
+          ),
           ElevatedButton(
             onPressed: () {
               if (!formKey.currentState!.validate()) return;
-              setModalState(() => _zonas.add(_ZonaObra(nombre: nombreController.text.trim(), sector: sectorController.text.trim(), referencia: referenciaController.text.trim(), nivel: nivelController.text.trim())));
+              setModalState(
+                () => _zonas.add(
+                  _ZonaObra(
+                    nombre: nombreController.text.trim(),
+                    sector: sectorController.text.trim(),
+                    referencia: referenciaController.text.trim(),
+                    nivel: nivelController.text.trim(),
+                  ),
+                ),
+              );
               Navigator.pop(dialogContext);
             },
-            style: ElevatedButton.styleFrom(backgroundColor: _verde, foregroundColor: Colors.black, minimumSize: const Size(150, 46)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _verde,
+              foregroundColor: Colors.black,
+              minimumSize: const Size(150, 46),
+            ),
             child: const Text('Guardar zona'),
           ),
         ],
@@ -308,21 +504,42 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
     );
   }
 
-  Widget _zoneField(TextEditingController controller, String label, String hint) {
+  Widget _zoneField(
+    TextEditingController controller,
+    String label,
+    String hint,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: TextFormField(
         controller: controller,
         style: const TextStyle(color: Colors.white),
-        decoration: InputDecoration(labelText: label, hintText: hint, labelStyle: const TextStyle(color: _gris), hintStyle: const TextStyle(color: _gris), enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: _borde)), focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: _verde))),
-        validator: (value) => value == null || value.trim().isEmpty ? 'Completa este dato' : null,
+        decoration: InputDecoration(
+          labelText: label,
+          hintText: hint,
+          labelStyle: const TextStyle(color: _gris),
+          hintStyle: const TextStyle(color: _gris),
+          enabledBorder: const UnderlineInputBorder(
+            borderSide: BorderSide(color: _borde),
+          ),
+          focusedBorder: const UnderlineInputBorder(
+            borderSide: BorderSide(color: _verde),
+          ),
+        ),
+        validator: (value) =>
+            value == null || value.trim().isEmpty ? 'Completa este dato' : null,
       ),
     );
   }
 }
 
 class _ZonaObra {
-  const _ZonaObra({required this.nombre, required this.sector, required this.referencia, required this.nivel});
+  const _ZonaObra({
+    required this.nombre,
+    required this.sector,
+    required this.referencia,
+    required this.nivel,
+  });
 
   final String nombre;
   final String sector;

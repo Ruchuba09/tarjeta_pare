@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../data/database_helper.dart';
+import 'alerts_screen.dart';
 import 'report_selection_screen.dart';
 import 'reports_screen.dart';
 
@@ -59,6 +60,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Expanded(
                   child: _indiceSeleccionado == 1
                       ? ReportsScreen(usuario: widget.usuario)
+                      : _indiceSeleccionado == 2
+                      ? AlertsScreen(usuario: widget.usuario)
                       : RefreshIndicator(
                           color: _verde,
                           backgroundColor: _panel,
@@ -372,8 +375,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           (index) => Expanded(
             child: InkWell(
               onTap: () {
-                if (index == 1) {
-                  _verReportes();
+                if (index == 1 || index == 2) {
+                  setState(() => _indiceSeleccionado = index);
                   return;
                 }
                 setState(() => _indiceSeleccionado = index);

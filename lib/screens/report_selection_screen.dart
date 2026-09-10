@@ -100,7 +100,7 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
       onTap: _mostrarPerfilObra,
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: const Color(0xFF14200F),
           border: Border.all(color: const Color(0xFF456A1A)),
@@ -108,8 +108,8 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
         ),
         child: const Row(
           children: [
-            Icon(Icons.qr_code_2, color: _verde, size: 32),
-            SizedBox(width: 12),
+            Icon(Icons.qr_code_2, color: _verde, size: 42),
+            SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,18 +118,19 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
                     'Perfil de obra',
                     style: TextStyle(
                       color: Colors.white,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   SizedBox(height: 4),
                   Text(
                     'Obra ampliación Planta Norte · 2 zonas con QR',
-                    style: TextStyle(color: _gris, fontSize: 11),
+                    style: TextStyle(color: _gris, fontSize: 13),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.chevron_right, color: _verde),
+            Icon(Icons.chevron_right, color: _verde, size: 30),
           ],
         ),
       ),
@@ -147,9 +148,9 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
   );
 
   Widget _buildTarjetaPareButton() {
-    final altura = (MediaQuery.sizeOf(context).height * .34).clamp(
-      180.0,
-      290.0,
+    final altura = (MediaQuery.sizeOf(context).height * .46).clamp(
+      260.0,
+      380.0,
     );
     return InkWell(
       onTap: _mostrarOpcionesTarjetaPare,
@@ -166,7 +167,7 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
         child: const Row(
           children: [
             Icon(
-              Icons.pan_tool_alt_outlined,
+              Icons.stop_circle_outlined,
               color: Color(0xFFFFC400),
               size: 58,
             ),
@@ -180,14 +181,14 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
                     'TARJETA PARE',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 26,
+                      fontSize: 30,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
                   SizedBox(height: 10),
                   Text(
                     'Detén una actividad riesgosa y registra el lugar.',
-                    style: TextStyle(color: _gris, fontSize: 14),
+                    style: TextStyle(color: _gris, fontSize: 16),
                   ),
                 ],
               ),
@@ -209,7 +210,7 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
       ),
       builder: (context) => SafeArea(
         child: FractionallySizedBox(
-          heightFactor: .78,
+          heightFactor: .88,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 26, 20, 20),
             child: Column(
@@ -265,17 +266,17 @@ class _ReportSelectionScreenState extends State<ReportSelectionScreen> {
       height: double.infinity,
       child: ElevatedButton.icon(
         onPressed: onPressed,
-        icon: Icon(icon, size: 44),
+        icon: Icon(icon, size: 56),
         label: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               title,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+              style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w900),
             ),
             const SizedBox(height: 6),
-            Text(subtitle, style: const TextStyle(fontSize: 13)),
+            Text(subtitle, style: const TextStyle(fontSize: 18)),
           ],
         ),
         style: ElevatedButton.styleFrom(

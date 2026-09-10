@@ -62,30 +62,10 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildBrand() {
     return Column(
       children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-          decoration: BoxDecoration(
-            color: const Color(0xFF161D20),
-            border: Border.all(color: _verde, width: 2),
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 38,
-                height: 38,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(color: _verde, borderRadius: BorderRadius.circular(9)),
-                child: const Icon(Icons.construction, color: Colors.black, size: 24),
-              ),
-              const SizedBox(width: 11),
-              const Text(
-                'AVA',
-                style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w900, letterSpacing: 1.5),
-              ),
-            ],
-          ),
+        const SizedBox(
+          width: 286,
+          height: 148,
+          child: CustomPaint(painter: _AvaLogoPainter()),
         ),
         const SizedBox(height: 24),
         const Text(
@@ -329,6 +309,49 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
     super.dispose();
   }
+}
+
+class _AvaLogoPainter extends CustomPainter {
+  const _AvaLogoPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final fondo = Paint()..color = const Color(0xFFA0FF00);
+    final negro = Paint()..color = Colors.black;
+    canvas.drawRect(Offset.zero & size, fondo);
+
+    final escala = size.width / 575;
+    canvas.save();
+    canvas.scale(escala, escala);
+
+    final ava = Path()
+      ..moveTo(15, 241)
+      ..lineTo(126, 34)
+      ..lineTo(237, 241)
+      ..lineTo(189, 241)
+      ..lineTo(126, 122)
+      ..lineTo(63, 241)
+      ..close()
+      ..moveTo(174, 34)
+      ..lineTo(222, 34)
+      ..lineTo(285, 152)
+      ..lineTo(348, 34)
+      ..lineTo(396, 34)
+      ..lineTo(285, 241)
+      ..close()
+      ..moveTo(333, 241)
+      ..lineTo(444, 34)
+      ..lineTo(555, 241)
+      ..lineTo(507, 241)
+      ..lineTo(444, 122)
+      ..lineTo(381, 241)
+      ..close();
+    canvas.drawPath(ava, negro);
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class RutInputFormatter extends TextInputFormatter {

@@ -38,6 +38,7 @@ class DatabaseHelper {
       },
     );
     await _crearUsuarioDemoSiEsNecesario(_baseDatos!);
+    await _crearDatosDemoSiEsNecesario(_baseDatos!);
     return _baseDatos!;
   }
 
@@ -56,6 +57,148 @@ class DatabaseHelper {
         rol: 'jefe_obra',
       );
     }
+  }
+
+  Future<void> _crearDatosDemoSiEsNecesario(Database baseDatos) async {
+    final reportes = await baseDatos.query('Reporte', columns: ['id_reporte'], limit: 1);
+    if (reportes.isNotEmpty) return;
+
+    await baseDatos.transaction((transaccion) async {
+      final clienteId = await transaccion.insert('Cliente', {
+        'nombre_cliente': 'AVA Montajes S.A.',
+        'rut_cliente': '76.543.210-8',
+        'correo': 'operaciones@avamontajes.cl',
+      });
+
+      final obras = <int>[];
+      for (final obra in [
+        ['Antofagasta Fase 2', 'Antofagasta', 'activa'],
+        ['Planta Concentradora', 'Calama', 'activa'],
+        ['Chancador Primario', 'Antofagasta', 'activa'],
+        ['Tranque de Relave', 'Sierra Gorda', 'activa'],
+        ['Ampliación Taller', 'Mejillones', 'cerrada'],
+      ]) {
+        obras.add(await transaccion.insert('Obra', {
+          'id_cliente': clienteId,
+          'nombre_obra': obra[0],
+          'ubicacion': obra[1],
+          'estado': obra[2],
+        }));
+      }
+
+      final usuario = await transaccion.query(
+        'Usuario',
+        columns: ['id_usuario'],
+        where: 'rut = ?',
+        whereArgs: ['20.155.245-1'],
+        limit: 1,
+      );
+      final usuarioId = usuario.first['id_usuario'] as int;
+
+      for (final obraId in obras) {
+        await transaccion.insert('Usuario_Obra', {
+          'id_usuario': usuarioId,
+          'id_obra': obraId,
+        });
+      }
+
+      final dimensiones = <int>[];
+      for (final dimension in [
+        ['Seguridad', 'Control de riesgos operacionales'],
+        ['Calidad', 'Inspección y cumplimiento de estándares'],
+        ['Medio Ambiente', 'Control de impactos ambientales'],
+        ['Salud Ocupacional', 'Condiciones de salud y bienestar'],
+      ]) {
+        dimensiones.add(await transaccion.insert('Dimension_SGI', {
+          'nombre_especialidad': dimension[0],
+          'descripcion': dimension[1],
+        }));
+      }
+
+      final tipos = <int>[];
+      for (final tipo in [
+        ['Tarjeta Pare', 'Detención preventiva de una actividad', 'alto'],
+        ['Observación Preventiva', 'Registro de condición o conducta', 'medio'],
+        ['No Conformidad', 'Incumplimiento de requisito SGI', 'alto'],
+        ['Reporte Flash', 'Aviso operacional rápido', 'crítico'],
+      ]) {
+        tipos.add(await transaccion.insert('Tipo_Reporte', {
+          'nombre_tipo': tipo[0],
+          'descripcion': tipo[1],
+          'factor_critico': tipo[2],
+          'estado': 'activo',
+        }));
+      }
+
+      final especialidades = <int>[];
+      for (final especialidad in [
+        ['Mecánica', 'Equipos y componentes mecánicos'],
+        ['Estructuras', 'Andamios, plataformas y soportes'],
+        ['Eléctrica', 'Instalaciones y equipos eléctricos'],
+        ['Operaciones', 'Procedimientos y continuidad operacional'],
+      ]) {
+        especialidades.add(await transaccion.insert('Especialidad', {
+          'nombre_especialidad': especialidad[0],
+          'descripcion': especialidad[1],
+        }));
+      }
+
+      final estados = <int>[];
+      for (final estado in ['Abierto', 'En proceso', 'Cerrado', 'Pendiente']) {
+        estados.add(await transaccion.insert('Estado_Reporte', {
+          'nombre_estado': estado,
+        }));
+      }
+
+      final descripciones = [
+        'Se detecta condición insegura en área de trabajo.',
+        'Inspección preventiva requiere seguimiento del supervisor.',
+        'Equipo presenta desgaste visible en componente principal.',
+        'Se detiene la actividad hasta controlar el riesgo identificado.',
+        'Falta señalización preventiva en acceso de operación.',
+        'Personal requiere refuerzo de procedimiento operacional.',
+        'Herramienta sin inspección vigente en frente de trabajo.',
+        'Orden y aseo deficiente alrededor del equipo.',
+      ];
+      final ahora = DateTime.now();
+
+      for (var indice = 0; indice < 120; indice++) {
+        final fecha = ahora.subtract(Duration(
+          days: indice % 90,
+          hours: (indice * 3) % 24,
+          minutes: (indice * 7) % 60,
+        ));
+        final reporteId = await transaccion.insert('Reporte', {
+          'id_dimension': dimensiones[indice % dimensiones.length],
+          'id_usuario': usuarioId,
+          'id_tipo_reporte': tipos[indice % tipos.length],
+          'id_especialidad': especialidades[indice % especialidades.length],
+          'id_estado_reporte': estados[indice % estados.length],
+          'id_obra': obras[indice % obras.length],
+          'fecha_evento': fecha.toIso8601String(),
+          'descripcion': descripciones[indice % descripciones.length],
+          'origen': indice.isEven ? 'QR' : 'Manual',
+          'fecha_registro': fecha.add(const Duration(minutes: 12)).toIso8601String(),
+        });
+
+        if (indice % 3 == 0) {
+          await transaccion.insert('Accion_Reporte', {
+            'id_reporte': reporteId,
+            'id_usuario': usuarioId,
+            'tipo_accion': 'Seguimiento',
+            'fecha_accion': fecha.add(const Duration(hours: 2)).toIso8601String(),
+            'observacion': 'Revisión asignada al supervisor de turno.',
+          });
+        }
+        if (indice % 5 == 0) {
+          await transaccion.insert('Evidencia', {
+            'id_reporte': reporteId,
+            'ruta_local': 'demo/evidencia_$indice.jpg',
+            'fecha_registro': fecha.add(const Duration(minutes: 20)).toIso8601String(),
+          });
+        }
+      }
+    });
   }
 
   Future<void> _crearBaseDatos(Database baseDatos, int versionEsquema) async {

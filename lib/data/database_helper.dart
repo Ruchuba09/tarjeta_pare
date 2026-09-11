@@ -61,7 +61,10 @@ class DatabaseHelper {
 
   Future<void> _crearDatosDemoSiEsNecesario(Database baseDatos) async {
     final reportes = await baseDatos.query('Reporte', columns: ['id_reporte'], limit: 1);
-    if (reportes.isNotEmpty) return;
+    if (reportes.isNotEmpty) {
+      await _completarColaEvidenciasDemo(baseDatos);
+      return;
+    }
 
     await baseDatos.transaction((transaccion) async {
       final clienteId = await transaccion.insert('Cliente', {
@@ -191,14 +194,45 @@ class DatabaseHelper {
           });
         }
         if (indice % 5 == 0) {
-          await transaccion.insert('Evidencia', {
+          final evidenciaId = await transaccion.insert('Evidencia', {
             'id_reporte': reporteId,
             'ruta_local': 'demo/evidencia_$indice.jpg',
             'fecha_registro': fecha.add(const Duration(minutes: 20)).toIso8601String(),
           });
+          await transaccion.insert('Cola_Sincronizacion', {
+            'nombre_tabla': 'Evidencia',
+            'id_registro': evidenciaId,
+            'operacion': 'insertar',
+            'fecha_registro': fecha.add(const Duration(minutes: 21)).toIso8601String(),
+            'intentos': 0,
+          });
         }
       }
     });
+  }
+
+  Future<void> _completarColaEvidenciasDemo(Database baseDatos) async {
+    final evidencias = await baseDatos.query(
+      'Evidencia',
+      columns: ['id_evidencia', 'fecha_registro'],
+    );
+    for (final evidencia in evidencias) {
+      final existentes = await baseDatos.query(
+        'Cola_Sincronizacion',
+        columns: ['id_cola'],
+        where: "nombre_tabla = 'Evidencia' AND id_registro = ?",
+        whereArgs: [evidencia['id_evidencia']],
+        limit: 1,
+      );
+      if (existentes.isNotEmpty) continue;
+      await baseDatos.insert('Cola_Sincronizacion', {
+        'nombre_tabla': 'Evidencia',
+        'id_registro': evidencia['id_evidencia'],
+        'operacion': 'insertar',
+        'fecha_registro': evidencia['fecha_registro'],
+        'intentos': 0,
+      });
+    }
   }
 
   Future<void> _crearBaseDatos(Database baseDatos, int versionEsquema) async {
@@ -415,14 +449,6 @@ class DatabaseHelper {
   }
 
   Future<Map<String, Object>> obtenerResumenDashboard() async {
-    if (kIsWeb) {
-      return {
-        'reportesHoy': 0,
-        'alertasActivas': 0,
-        'evidenciasPendientes': 0,
-        'riesgoPromedio': 'N/D',
-      };
-    }
     final baseDatos = await this.baseDatos;
     final hoy = DateTime.now().toIso8601String().substring(0, 10);
     final reportesHoy = await baseDatos.rawQuery(
@@ -440,12 +466,23 @@ class DatabaseHelper {
       FROM Cola_Sincronizacion
       WHERE nombre_tabla = 'Evidencia' AND operacion IN ('insertar', 'crear', 'actualizar')
     ''');
+    final reportesActivos = Sqflite.firstIntValue(alertasActivas) ?? 0;
+    final totalReportes = await baseDatos.rawQuery(
+      'SELECT COUNT(*) AS total FROM Reporte',
+    );
+    final total = Sqflite.firstIntValue(totalReportes) ?? 0;
+    final proporcionActiva = total == 0 ? 0 : reportesActivos / total;
+    final riesgoPromedio = switch (proporcionActiva) {
+      >= .66 => 'Alto',
+      >= .33 => 'Medio',
+      _ => 'Bajo',
+    };
 
     return {
       'reportesHoy': Sqflite.firstIntValue(reportesHoy) ?? 0,
-      'alertasActivas': Sqflite.firstIntValue(alertasActivas) ?? 0,
+      'alertasActivas': reportesActivos,
       'evidenciasPendientes': Sqflite.firstIntValue(evidenciasPendientes) ?? 0,
-      'riesgoPromedio': 'N/D',
+      'riesgoPromedio': riesgoPromedio,
     };
   }
 
